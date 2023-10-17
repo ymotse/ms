@@ -1,0 +1,17 @@
+environment: PRODUCTION
+spring:
+  application:
+    name: booking-service
+  config:
+    activate:
+      on-profile: prod
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${registry.hostname}:${registry.port}/eureka
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 8000
+        readTimeout: 10000

@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: service-registry
+  cloud:
+    config:
+      import-check:
+        enabled: false
+eureka:
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
