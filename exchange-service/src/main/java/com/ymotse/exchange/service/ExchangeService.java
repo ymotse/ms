@@ -1,7 +1,7 @@
 package com.ymotse.exchange.service;
 
 import com.ymotse.exchange.entity.Exchange;
-import com.ymotse.exchange.transfer.CurrencyIdentifier;
+import com.ymotse.exchange.business.CurrencyIdentifier;
 import com.ymotse.exchange.transfer.CurrencyType;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

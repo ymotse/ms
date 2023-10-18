@@ -1,4 +1,6 @@
-package com.ymotse.exchange.transfer;
+package com.ymotse.exchange.business;
+
+import com.ymotse.exchange.transfer.CurrencyType;
 
 import java.math.BigDecimal;
 
