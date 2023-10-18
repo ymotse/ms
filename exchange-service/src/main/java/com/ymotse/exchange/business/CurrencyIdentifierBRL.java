@@ -17,8 +17,8 @@ public class CurrencyIdentifierBRL implements CurrencyIdentifier {
                     BigDecimal.valueOf(0.19843);
             case EUR ->
                     BigDecimal.valueOf(0.18787);
-            default ->
-                    throw new IllegalArgumentException();
+            case BRL ->
+                BigDecimal.ONE;
         };
     }
 }
