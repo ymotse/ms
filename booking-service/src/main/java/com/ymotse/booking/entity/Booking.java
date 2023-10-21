@@ -1,28 +1,40 @@
 package com.ymotse.booking.entity;
 
 import com.ymotse.booking.transfer.CurrencyType;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 
+@Entity
+@Table(name = "booking")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@EqualsAndHashCode(of = { "id" })
 public class Booking {
-    private Integer id;
-    private String description;
-    private BigDecimal valuePerDay;
-    private CurrencyType currencyDefault;
 
-    public static Booking of(Integer id, String description, BigDecimal value, CurrencyType currencyDefault) {
-        Booking booking = new Booking(id, description, value, currencyDefault);
-        booking.id = id;
+    @Setter
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "seq_booking_id")
+    @SequenceGenerator(name = "seq_booking_id", sequenceName = "seq_booking_id", allocationSize = 1)
+    private Integer id;
+
+    @Column(name = "description")
+    private String description;
+
+    @Column(name = "value_per_day")
+    private BigDecimal valuePerDay;
+
+    @Column(name = "currency")
+    @Enumerated(EnumType.STRING)
+    private CurrencyType currency;
+
+    public static Booking of(String description, BigDecimal value, CurrencyType currency) {
+        Booking booking = new Booking();
         booking.description = description;
         booking.valuePerDay = value;
-        booking.currencyDefault = currencyDefault;
+        booking.currency = currency;
 
         return booking;
     }

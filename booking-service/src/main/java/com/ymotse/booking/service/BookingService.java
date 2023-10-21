@@ -3,36 +3,53 @@ package com.ymotse.booking.service;
 import com.ymotse.booking.entity.Booking;
 import com.ymotse.booking.proxy.ExchangeProxy;
 import com.ymotse.booking.repository.BookingRepository;
+import com.ymotse.booking.transfer.BookingRequest;
 import com.ymotse.booking.transfer.BookingResponse;
 import com.ymotse.booking.transfer.CurrencyType;
 import com.ymotse.booking.transfer.ExchangeDto;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class BookingService {
 
-    private final Environment environment;
     private final BookingRepository bookingRepository;
     private final ExchangeProxy exchangeProxy;
 
-    public BookingResponse booking(@NonNull Integer id, @NonNull CurrencyType currency) {
-        String port = environment.getProperty("local.server.port");
+    public List<BookingResponse> listAll() {
+        List<BookingResponse> bookings = new ArrayList<>();
 
-        Booking booking = bookingRepository.getById(id)
+        bookingRepository.findAll()
+                .iterator()
+                .forEachRemaining(booking -> {
+                    BookingResponse bookingResponse = BookingResponse.of(booking.getId(), booking.getDescription(), booking.getCurrency(), booking.getValuePerDay());
+
+                    bookings.add(bookingResponse);
+                });
+
+        return bookings;
+    }
+
+    public BookingResponse booking(@NonNull Integer id, @NonNull CurrencyType currency) {
+        Booking booking = bookingRepository.findById(id)
                                   .orElseThrow(IllegalArgumentException::new);
 
-        ExchangeDto exchange = exchangeProxy.exchange(booking.getValuePerDay(), booking.getCurrencyDefault(), currency);
+        ExchangeDto exchange = exchangeProxy.exchange(booking.getValuePerDay(), booking.getCurrency(), currency);
 
-        return BookingResponse.builder()
-                       .id(booking.getId())
-                       .description(booking.getDescription())
-                       .exchange(currency)
-                       .value(exchange.getValue())
-                       .environment(String.format("Booking Port: %s, Exchange Port: %s",  port, exchange.getEnvironment()))
-                       .build();
+        return BookingResponse.of(booking.getId(), booking.getDescription(), currency, exchange.getValue());
     }
+
+    public BookingResponse create(@NonNull BookingRequest request) {
+        Booking booking = Booking.of(request.getDescription(), request.getValue(), request.getExchange());
+
+        Booking saved = bookingRepository.save(booking);
+
+        return BookingResponse.of(saved.getId(), saved.getDescription(), saved.getCurrency(), saved.getValuePerDay());
+    }
+
 }
