@@ -1,12 +1,12 @@
-environment: DEVELOPMENT
+environment: INTEGRATION-TEST
 spring:
   application:
     name: booking-service
   config:
     activate:
-      on-profile: dev
+      on-profile: itdb
   datasource:
-    url: jdbc:h2:mem:devdb #jdbc:h2:file:./devdb
+    url: jdbc:h2:mem:itdb #jdbc:h2:file:./devdb
     driverClassName: org.h2.Driver
     username: sa
     password: pass
