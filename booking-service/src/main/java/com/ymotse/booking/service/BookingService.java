@@ -1,6 +1,7 @@
 package com.ymotse.booking.service;
 
 import com.ymotse.booking.entity.Booking;
+import com.ymotse.booking.exception.NotFoundException;
 import com.ymotse.booking.proxy.ExchangeProxy;
 import com.ymotse.booking.repository.BookingRepository;
 import com.ymotse.booking.transfer.BookingRequest;
@@ -37,7 +38,7 @@ public class BookingService {
 
     public BookingResponse booking(@NonNull Integer id, @NonNull CurrencyType currency) {
         Booking booking = bookingRepository.findById(id)
-                                  .orElseThrow(IllegalArgumentException::new);
+                                  .orElseThrow(() -> new NotFoundException(String.format("Booking with id %d not found.", id)));
 
         ExchangeDto exchange = exchangeProxy.exchange(booking.getValuePerDay(), booking.getCurrency(), currency);
 
