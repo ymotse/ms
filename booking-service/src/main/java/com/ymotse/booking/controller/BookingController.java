@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -22,6 +23,11 @@ public class BookingController {
     @GetMapping("/all")
     public List<BookingResponse> listAll() {
         return bookingService.listAll();
+    }
+
+    @GetMapping
+    public Map<String, Object> findByDescriptionContainingIgnoreCase(@RequestParam String description, @RequestParam int page, @RequestParam("page-size") int pageSize) {
+        return bookingService.findByDescriptionContainingIgnoreCase(description, page, pageSize);
     }
 
     @GetMapping(value = "/{id}/{currency}")

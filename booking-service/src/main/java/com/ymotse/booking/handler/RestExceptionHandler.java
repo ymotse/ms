@@ -1,12 +1,14 @@
 package com.ymotse.booking.handler;
 
 import com.ymotse.booking.exception.ExceptionDetails;
+import com.ymotse.booking.exception.NotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -31,5 +33,17 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                         .stamp(LocalDateTime.now())
                         .build(),
                 HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    protected ResponseEntity<Object> handleNotFoundException(NotFoundException ex) {
+        return new ResponseEntity<>(
+                ExceptionDetails.builder()
+                        .title(HttpStatus.NOT_FOUND.name())
+                        .message("Data not found.")
+                        .details(ex.getMessage())
+                        .stamp(LocalDateTime.now())
+                        .build(),
+                HttpStatus.NOT_FOUND);
     }
 }

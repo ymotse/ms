@@ -10,10 +10,15 @@ import com.ymotse.booking.transfer.CurrencyType;
 import com.ymotse.booking.transfer.ExchangeDto;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -27,13 +32,24 @@ public class BookingService {
 
         bookingRepository.findAll()
                 .iterator()
-                .forEachRemaining(booking -> {
-                    BookingResponse bookingResponse = BookingResponse.of(booking.getId(), booking.getDescription(), booking.getCurrency(), booking.getValuePerDay());
-
-                    bookings.add(bookingResponse);
-                });
+                .forEachRemaining(booking -> bookings.add(BookingResponse.of(booking)));
 
         return bookings;
+    }
+
+    public Map<String, Object> findByDescriptionContainingIgnoreCase(String description, int page, int pageSize) {
+        Pageable paging = PageRequest.of(page, pageSize);
+
+        Page<Booking> bookings = bookingRepository.findByDescriptionContainingIgnoreCase(description, paging);
+
+        Map<String, Object> response = new HashMap<>();
+
+        response.put("bookings", bookings.getContent());
+        response.put("page", bookings.getNumber() + 1);
+        response.put("items", bookings.getTotalElements());
+        response.put("total-pages", bookings.getTotalPages());
+
+        return response;
     }
 
     public BookingResponse booking(@NonNull Integer id, @NonNull CurrencyType currency) {

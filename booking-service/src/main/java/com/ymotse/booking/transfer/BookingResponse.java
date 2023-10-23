@@ -1,5 +1,6 @@
 package com.ymotse.booking.transfer;
 
+import com.ymotse.booking.entity.Booking;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,5 +17,9 @@ public class BookingResponse {
 
     public static BookingResponse of(Integer id, String description, CurrencyType currency, BigDecimal value) {
         return new BookingResponse(id, description, currency, value);
+    }
+
+    public static BookingResponse of(Booking booking) {
+        return BookingResponse.of(booking.getId(), booking.getDescription(), booking.getCurrency(), booking.getValuePerDay());
     }
 }
